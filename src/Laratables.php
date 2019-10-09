@@ -92,6 +92,17 @@ class Laratables
         if ($searchValue) {
             $this->queryHandler->applyFilters($this->columnManager->getSearchColumns(), $searchValue);
         }
+
+        // Search by individual columns
+        $cols = request('columns');
+
+        foreach ($cols as $col) {
+            // if the column is searchable and has a value... apply a filter on it
+            if ($col['searchable'] == true && !empty($col['search']['value'])) {
+                $col_array = [$col['name']];
+                $this->queryHandler->applyFilters($col_array, $col['search']['value']);
+            }
+        }
     }
 
     /**
