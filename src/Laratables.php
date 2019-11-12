@@ -94,7 +94,7 @@ class Laratables
         }
 
         // Search by individual columns
-        $cols = request('columns');
+        $cols = request('columns', []);
 
         foreach ($cols as $col) {
             // if the column is searchable and has a value... apply a filter on it
