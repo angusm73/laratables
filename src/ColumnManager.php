@@ -207,7 +207,10 @@ class ColumnManager
 
         $order = request('order');
 
-        $orderColumn = $requestedColumnNames[$order[0]['column']];
+        $orderColumn = array_get($requestedColumnNames, $order[0]['column']);
+        if (!$orderColumn) {
+            $orderColumn = current($requestedColumnNames);
+        }
 
         if ($methodName = $this->hasCustomOrdering($orderColumn)) {
             $orderColumn = $this->class::$methodName();
