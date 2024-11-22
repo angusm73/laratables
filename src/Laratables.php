@@ -87,6 +87,17 @@ class Laratables
         if ($searchValue) {
             $this->queryHandler->applyFilters($this->columnManager->getSearchColumns(), $searchValue);
         }
+
+        // Search by individual columns
+        $cols = request('columns', []);
+
+        foreach ($cols as $col) {
+            // if the column has a search value... apply a filter on it
+            if (!empty($col['search']['value'])) {
+                $col_array = [$col['name']];
+                $this->queryHandler->applyFilters($col_array, $col['search']['value']);
+            }
+        }
     }
 
     /**
@@ -103,8 +114,7 @@ class Laratables
                 $limit = getRecordsLimit((int) request('length'));
 
                 $query->limit($limit)->offset((int) request('start'));
-            })
-        ;
+            });
 
         $this->columnManager
             ->getOrderColumns()
@@ -131,8 +141,7 @@ class Laratables
             // If max_limit is more than 0, we should apply the limit.
             config('laratables.max_limit') > 0 ||
             // If request has a numeric limit, we should apply it.
-            (is_numeric(request('length')) && (int) request('length') > 0)
-        ;
+            (is_numeric(request('length')) && (int) request('length') > 0);
     }
 
     /**
